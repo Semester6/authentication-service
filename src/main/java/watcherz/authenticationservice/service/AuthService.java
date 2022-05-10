@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import watcherz.authenticationservice.exceptions.*;
-import watcherz.authenticationservice.model.Login;
-import watcherz.authenticationservice.model.RegisterUser;
-import watcherz.authenticationservice.model.Role;
-import watcherz.authenticationservice.model.User;
+import watcherz.authenticationservice.model.*;
 import watcherz.authenticationservice.repository.AuthRepository;
 
 import java.util.UUID;
@@ -58,15 +55,19 @@ public class AuthService {
         return passwordEncoder.matches(loginPassword, userPassword);
     }
 
-    public void signUp(RegisterUser registerUser) throws CouldNotSaveUserException {
-        String password = EncodePassword(registerUser.getPassword());
-        User user = new User(UUID.randomUUID(), registerUser.getEmail(), password, Role.ROLE_USER);
+    public RabbitUser signUp(RegisterUser registerUser) throws CouldNotSaveUserException {
+        String password;
+        User user;
+        RabbitUser rabbitUser;
         try{
+            password = EncodePassword(registerUser.getPassword());
+            user = new User(UUID.randomUUID(), registerUser.getEmail(), password, Role.ROLE_USER);
             authRepository.save(user);
+            rabbitUser = new RabbitUser(user.getUserId(), user.getEmail());
+            return rabbitUser;
         }
         catch (Exception e) {
             throw new CouldNotSaveUserException();
         }
-       //return user.getUserId();
     }
 }
