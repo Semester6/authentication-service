@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authservice
+  namespace: watcherz
+  labels:
+    app: authservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authservice
+  template:
+    metadata:
+      labels:
+        app: authservice
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: watcherz-authservice
+          image:  registry.vimuens.nl/watcherz-authservice:latest
+          imagePullPolicy: Always
+          env:
+            - name: eureka.client.serviceUrl.defaultZone
+              value: http://discoveryservice:8761/eureka
+            - name: eureka.instance.prefer-ip-address
+              value: "true"
+            - name: server.port
+              value: "9093"
+          ports:
+            - containerPort: 8085
