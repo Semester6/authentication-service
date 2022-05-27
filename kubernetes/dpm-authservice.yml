@@ -21,10 +21,6 @@ spec:
           image:  registry.vimuens.nl/watcherz-authservice:latest
           imagePullPolicy: Always
           env:
-            - name: eureka.client.serviceUrl.defaultZone
-              value: http://discoveryservice:8761/eureka
-            - name: eureka.instance.prefer-ip-address
-              value: "true"
             - name: server.port
               value: "9093"
           ports:
