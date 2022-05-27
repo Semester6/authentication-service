@@ -1,4 +1,3 @@
-		
 name: Deployment
 
 on:
@@ -28,3 +27,8 @@ jobs:
       run: docker build . --tag registry.vimuens.nl/watcherz-authservice:latest
     - name: Publish to Docker Registry
       run: docker push registry.vimuens.nl/watcherz-authservice:latest
+    - uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: apply -f kubernetes
